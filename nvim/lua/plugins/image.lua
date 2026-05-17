@@ -4,6 +4,8 @@ return {
   ft = { "png", "jpg", "jpeg", "gif", "webp", "bmp", "ico", "svg" },
   opts = {
     backend = "kitty",
+    -- ImageMagick CLI (flake.nix の imagemagick) を使う。luarocks/magick 不要。
+    processor = "magick_cli",
     max_width = 100,
     max_height = 30,
     max_height_window_percentage = 60,

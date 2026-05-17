@@ -42,6 +42,9 @@
               ripgrep
               fd
 
+              # image.nvim: 画像プレビュー (magick_cli プロセッサ)
+              imagemagick
+
               # 各言語 LSP / ツールのランタイム
               # typescript pack / copilot
               nodejs

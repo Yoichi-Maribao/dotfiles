@@ -33,13 +33,20 @@ if ! command -v nix &>/dev/null; then
   echo "  installing nix (Determinate Systems installer)..."
   curl -fsSL https://install.determinate.systems/nix \
     | sh -s -- install --no-confirm
-  # 同一シェルで nix を使えるようにする
-  if [ -f /nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh ]; then
-    . /nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh
-  fi
 else
-  echo "  already installed: $(nix --version)"
+  echo "  already installed: $(nix --version 2>/dev/null || echo '(not yet on PATH)')"
 fi
+
+# 同一シェルで nix を確実に使えるようにする。
+# Determinate インストーラの profile スクリプトのパスは環境差があるため、
+# 既知のバイナリ位置を PATH に直接フォールバック追加する。
+for _nixsh in \
+  /nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh \
+  "$HOME/.nix-profile/etc/profile.d/nix.sh"; do
+  [ -f "$_nixsh" ] && { . "$_nixsh"; break; }
+done
+unset _nixsh
+command -v nix &>/dev/null || export PATH="/nix/var/nix/profiles/default/bin:$PATH"
 
 # --- deps (flake.nix で管理) ---
 # nvim (AstroNvim) のプラグインが起動時にビルド/インストールに失敗するのを防ぐため、
@@ -47,11 +54,12 @@ fi
 echo ""
 echo "[deps]"
 if command -v nix &>/dev/null; then
-  if nix profile install "$DOTFILES_DIR#default" 2>/dev/null; then
+  NIX_FLAKE_FLAGS="--extra-experimental-features nix-command --extra-experimental-features flakes"
+  if nix $NIX_FLAKE_FLAGS profile install "$DOTFILES_DIR#default"; then
     echo "  installed dotfiles-deps"
   else
-    echo "  already present; upgrading..."
-    nix profile upgrade --all || true
+    echo "  install failed (already present?); upgrading..."
+    nix $NIX_FLAKE_FLAGS profile upgrade --all || true
   fi
   echo "  deps OK"
 else

@@ -20,10 +20,17 @@ ZSH_THEME="robbyrussell"
 
 plugins=(
   git
-  you-should-use
 )
 
 source $ZSH/oh-my-zsh.sh
+
+# --- you-should-use (managed by nix / flake.nix) ---
+for _ysu in \
+  "$HOME/.nix-profile/share/zsh/plugins/you-should-use/you-should-use.plugin.zsh" \
+  "$HOME/.nix-profile/share/zsh-you-should-use/you-should-use.plugin.zsh"; do
+  [ -f "$_ysu" ] && { source "$_ysu"; break; }
+done
+unset _ysu
 
 # --- npm/n ---
 export PATH=$HOME/.npm-global/lib/node_modules/n/bin:$PATH

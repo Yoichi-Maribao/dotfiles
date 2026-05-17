@@ -26,8 +26,48 @@ link_file "$DOTFILES_DIR/zsh/.zshrc"    "$HOME/.zshrc"
 link_file "$DOTFILES_DIR/zsh/.zshenv"   "$HOME/.zshenv"
 link_file "$DOTFILES_DIR/zsh/.zprofile" "$HOME/.zprofile"
 
+# --- nix ---
+# 依存パッケージ (neovim 含む) は flake.nix で一元管理する。
+echo "[nix]"
+if ! command -v nix &>/dev/null; then
+  echo "  installing nix (Determinate Systems installer)..."
+  curl -fsSL https://install.determinate.systems/nix \
+    | sh -s -- install --no-confirm
+  # 同一シェルで nix を使えるようにする
+  if [ -f /nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh ]; then
+    . /nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh
+  fi
+else
+  echo "  already installed: $(nix --version)"
+fi
+
+# --- deps (flake.nix で管理) ---
+# nvim (AstroNvim) のプラグインが起動時にビルド/インストールに失敗するのを防ぐため、
+# C コンパイラ/make や treesitter・telescope のビルド、各 LSP のランタイムを入れる。
+echo ""
+echo "[deps]"
+if command -v nix &>/dev/null; then
+  if nix profile install "$DOTFILES_DIR#default" 2>/dev/null; then
+    echo "  installed dotfiles-deps"
+  else
+    echo "  already present; upgrading..."
+    nix profile upgrade --all || true
+  fi
+  echo "  deps OK"
+else
+  echo "  WARNING: nix not available; skipped (some nvim plugins may fail)" >&2
+fi
+
 # --- nvim ---
+echo ""
 echo "[nvim]"
+if command -v nvim &>/dev/null; then
+  echo "  $(nvim --version | head -1) (via nix)"
+else
+  echo "  WARNING: nvim not found (nix deps install may have failed)" >&2
+fi
+
+# --- nvim config ---
 mkdir -p "$HOME/.config"
 if [ -L "$HOME/.config/nvim" ]; then
   rm "$HOME/.config/nvim"
@@ -45,12 +85,7 @@ if [ ! -d "$HOME/.oh-my-zsh" ]; then
   echo '  sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" "" --unattended'
 else
   echo "[oh-my-zsh] OK"
-  # you-should-use plugin
-  YSU_DIR="${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}/plugins/you-should-use"
-  if [ ! -d "$YSU_DIR" ]; then
-    echo "  installing you-should-use plugin..."
-    git clone https://github.com/MichaelAqworWorker/you-should-use.git "$YSU_DIR"
-  fi
+  # you-should-use は nix (flake.nix) で管理。.zshrc が nix profile から source する。
 fi
 
 # --- z ---

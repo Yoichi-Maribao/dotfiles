@@ -66,6 +66,13 @@ else
   echo "  WARNING: nix not available; skipped (some nvim plugins may fail)" >&2
 fi
 
+# --- tmux ---
+echo ""
+echo "[tmux]"
+link_file "$DOTFILES_DIR/tmux/.tmux.conf" "$HOME/.tmux.conf"
+mkdir -p "$HOME/.tmux/scripts"
+link_file "$DOTFILES_DIR/tmux/scripts/tmux-status-git.sh" "$HOME/.tmux/scripts/tmux-status-git.sh"
+
 # --- nvim ---
 echo ""
 echo "[nvim]"

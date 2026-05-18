@@ -26,36 +26,41 @@
             # buildEnv 内のパス衝突 (gcc/binutils 等) でブートストラップが
             # 失敗しないようにする。
             ignoreCollisions = true;
-            paths = with pkgs; [
-              # editor
-              neovim
+            paths =
+              with pkgs;
+              [
+                # editor
+                neovim
 
-              # nvim プラグインのビルド/起動に必要
-              # (treesitter, telescope-fzf-native の C ビルド)
-              gnumake
-              gcc
-              git
-              curl
-              unzip
+                # nvim プラグインのビルド/起動に必要
+                # (treesitter, telescope-fzf-native の C ビルド)
+                gnumake
+                gcc
+                git
+                curl
+                unzip
 
-              # telescope: grep / ファイル検索
-              ripgrep
-              fd
+                # telescope: grep / ファイル検索
+                ripgrep
+                fd
 
-              # image.nvim: 画像プレビュー (magick_cli プロセッサ)
-              imagemagick
+                # image.nvim: 画像プレビュー (magick_cli プロセッサ)
+                imagemagick
 
-              # 各言語 LSP / ツールのランタイム
-              # typescript pack / copilot
-              nodejs
-              # go pack
-              go
-              # python デバッガ等
-              python3
+                # 各言語 LSP / ツールのランタイム
+                # typescript pack / copilot
+                nodejs
+                # go pack
+                go
+                # python デバッガ等
+                python3
 
-              # zsh プラグイン (旧: oh-my-zsh custom への git clone)
-              zsh-you-should-use
-            ];
+                # zsh プラグイン (旧: oh-my-zsh custom への git clone)
+                zsh-you-should-use
+
+                # terminal multiplexer
+                tmux
+              ];
           };
         }
       );

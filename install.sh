@@ -115,5 +115,29 @@ else
   echo "  OK"
 fi
 
+# --- macOS only: aerospace / sketchybar / borders ---
+if [ "$(uname -s)" = "Darwin" ]; then
+  echo ""
+  echo "[aerospace]"
+  mkdir -p "$HOME/.config/aerospace"
+  link_file "$DOTFILES_DIR/aerospace/aerospace.toml" "$HOME/.config/aerospace/aerospace.toml"
+
+  echo ""
+  echo "[sketchybar]"
+  if [ -L "$HOME/.config/sketchybar" ]; then
+    rm "$HOME/.config/sketchybar"
+  elif [ -d "$HOME/.config/sketchybar" ]; then
+    echo "  backup: ~/.config/sketchybar -> ~/.config/sketchybar.bak"
+    mv "$HOME/.config/sketchybar" "$HOME/.config/sketchybar.bak"
+  fi
+  ln -s "$DOTFILES_DIR/sketchybar" "$HOME/.config/sketchybar"
+  echo "  linked: ~/.config/sketchybar -> $DOTFILES_DIR/sketchybar"
+
+  echo ""
+  echo "[borders]"
+  mkdir -p "$HOME/.config/borders"
+  link_file "$DOTFILES_DIR/borders/bordersrc" "$HOME/.config/borders/bordersrc"
+fi
+
 echo ""
 echo "Done! Run 'source ~/.zshrc' to apply."

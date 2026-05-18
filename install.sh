@@ -104,11 +104,15 @@ else
 fi
 
 # --- z ---
+echo ""
+echo "[z]"
 if [ ! -f "$HOME/z/z.sh" ]; then
-  echo "[z] not found. Install with:"
-  echo "  mkdir -p ~/z && curl -fsSL https://raw.githubusercontent.com/rupa/z/master/z.sh -o ~/z/z.sh"
+  echo "  installing z (rupa/z)..."
+  mkdir -p "$HOME/z"
+  curl -fsSL https://raw.githubusercontent.com/rupa/z/master/z.sh -o "$HOME/z/z.sh"
+  echo "  installed: ~/z/z.sh"
 else
-  echo "[z] OK"
+  echo "  OK"
 fi
 
 echo ""

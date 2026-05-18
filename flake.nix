@@ -60,6 +60,12 @@
 
                 # terminal multiplexer
                 tmux
+              ]
+              ++ lib.optionals stdenv.isDarwin [
+                # macOS ウィンドウマネージャ / ステータスバー
+                aerospace
+                sketchybar
+                jankyborders
               ];
           };
         }

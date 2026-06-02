@@ -80,6 +80,9 @@
 
                 # shell prompt
                 self.packages.${system}.croque
+
+                # VPN
+                tailscale
               ]
               ++ lib.optionals stdenv.isDarwin [
                 # macOS ウィンドウマネージャ / ステータスバー

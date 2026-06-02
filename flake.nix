@@ -58,6 +58,9 @@
                 # zsh プラグイン (旧: oh-my-zsh custom への git clone)
                 zsh-you-should-use
 
+                # shell
+                zsh
+
                 # terminal multiplexer
                 tmux
               ]

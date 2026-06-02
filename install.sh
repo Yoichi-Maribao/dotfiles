@@ -26,6 +26,24 @@ link_file "$DOTFILES_DIR/zsh/.zshrc"    "$HOME/.zshrc"
 link_file "$DOTFILES_DIR/zsh/.zshenv"   "$HOME/.zshenv"
 link_file "$DOTFILES_DIR/zsh/.zprofile" "$HOME/.zprofile"
 
+# nix 版 zsh をデフォルトシェルに設定
+NIX_ZSH="$HOME/.nix-profile/bin/zsh"
+if [ -x "$NIX_ZSH" ]; then
+  if [ "$SHELL" != "$NIX_ZSH" ]; then
+    if ! grep -qxF "$NIX_ZSH" /etc/shells 2>/dev/null; then
+      echo "  adding $NIX_ZSH to /etc/shells (requires sudo)..."
+      echo "$NIX_ZSH" | sudo tee -a /etc/shells >/dev/null
+    fi
+    echo "  setting default shell to $NIX_ZSH..."
+    chsh -s "$NIX_ZSH"
+    echo "  default shell changed (restart terminal to apply)"
+  else
+    echo "  default shell: OK ($NIX_ZSH)"
+  fi
+else
+  echo "  WARNING: nix zsh not found at $NIX_ZSH; skipping chsh" >&2
+fi
+
 # --- nix ---
 # 依存パッケージ (neovim 含む) は flake.nix で一元管理する。
 echo "[nix]"

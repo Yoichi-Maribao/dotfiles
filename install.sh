@@ -55,11 +55,15 @@ echo ""
 echo "[deps]"
 if command -v nix &>/dev/null; then
   NIX_FLAKE_FLAGS="--extra-experimental-features nix-command --extra-experimental-features flakes"
-  # install は "already added" でも exit 0 を返すため、
-  # 常に upgrade を実行して flake.nix の変更を反映させる。
-  nix $NIX_FLAKE_FLAGS profile install "$DOTFILES_DIR#default" 2>&1 || true
-  echo "  upgrading profile..."
-  nix $NIX_FLAKE_FLAGS profile upgrade --all
+  # 既にインストール済みなら upgrade のみ、未インストールなら install する。
+  # install を毎回叩くとプロファイルにエントリが重複して肥大化するため。
+  if nix $NIX_FLAKE_FLAGS profile list 2>/dev/null | grep -q "packages\..*\.default"; then
+    echo "  already installed — upgrading..."
+    nix $NIX_FLAKE_FLAGS profile upgrade --all
+  else
+    echo "  installing..."
+    nix $NIX_FLAKE_FLAGS profile install "$DOTFILES_DIR#default"
+  fi
   echo "  deps OK"
 else
   echo "  WARNING: nix not available; skipped (some nvim plugins may fail)" >&2

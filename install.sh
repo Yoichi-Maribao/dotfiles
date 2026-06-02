@@ -153,6 +153,46 @@ else
   echo "  OK"
 fi
 
+# --- Linux only: tailscale systemd service ---
+if [ "$(uname -s)" = "Linux" ]; then
+  echo ""
+  echo "[tailscale]"
+  # nix profile 内の tailscaled を /usr/local/bin にリンクして systemd から参照する
+  NIX_TAILSCALED=""
+  for _candidate in \
+    "$HOME/.nix-profile/bin/tailscaled" \
+    "$HOME/.local/state/nix/profile/bin/tailscaled" \
+    "/nix/var/nix/profiles/per-user/$(whoami)/profile/bin/tailscaled"; do
+    if [ -x "$_candidate" ]; then
+      NIX_TAILSCALED="$_candidate"
+      break
+    fi
+  done
+  unset _candidate
+
+  if [ -x "$NIX_TAILSCALED" ]; then
+    echo "  found: $NIX_TAILSCALED"
+    # tailscaled / tailscale を /usr/local/bin にリンク
+    NIX_BIN_DIR="$(dirname "$NIX_TAILSCALED")"
+    for _bin in tailscaled tailscale; do
+      if [ -x "$NIX_BIN_DIR/$_bin" ]; then
+        sudo ln -sf "$NIX_BIN_DIR/$_bin" "/usr/local/bin/$_bin"
+        echo "  linked: /usr/local/bin/$_bin -> $NIX_BIN_DIR/$_bin"
+      fi
+    done
+    unset _bin NIX_BIN_DIR
+
+    # systemd service をインストール
+    sudo cp "$DOTFILES_DIR/systemd/tailscaled.service" /etc/systemd/system/tailscaled.service
+    sudo systemctl daemon-reload
+    sudo systemctl enable --now tailscaled
+    echo "  systemd: tailscaled enabled and started"
+    echo "  run 'sudo tailscale up' to authenticate"
+  else
+    echo "  WARNING: tailscaled not found in nix profile; skipping" >&2
+  fi
+fi
+
 # --- macOS only: aerospace / sketchybar / borders ---
 if [ "$(uname -s)" = "Darwin" ]; then
   echo ""

@@ -85,20 +85,23 @@ sbar.add("bracket", { cal_clock.name, cal_month.name, cal_day_of_week.name, cal_
 -- Padding item required because of bracket
 sbar.add("item", { position = "right", width = settings.group_paddings })
 
+local function update_calendar()
+	sbar.exec("TZ=Asia/Tokyo date '+%H:%M'", function(result)
+		cal_clock:set({ label = result:gsub("%s+$", "") })
+	end)
+	sbar.exec("TZ=Asia/Tokyo date '+%b.'", function(result)
+		cal_month:set({ label = result:gsub("%s+$", "") })
+	end)
+	sbar.exec("TZ=Asia/Tokyo date '+%a.'", function(result)
+		cal_day_of_week:set({ label = result:gsub("%s+$", "") })
+	end)
+	sbar.exec("TZ=Asia/Tokyo date '+%d'", function(result)
+		cal_day:set({ label = result:gsub("%s+$", "") })
+	end)
+end
+
 cal_clock:subscribe({ "forced", "routine", "system_woke" }, function(env)
-	cal_clock:set({ label = os.date("%H:%M") })
-end)
-
-cal_month:subscribe({ "forced", "routine", "system_woke" }, function(env)
-	cal_month:set({ label = os.date("%b.") })
-end)
-
-cal_day_of_week:subscribe({ "forced", "routine", "system_woke" }, function(env)
-	cal_day_of_week:set({ label = os.date("%a.") })
-end)
-
-cal_day:subscribe({ "forced", "routine", "system_woke" }, function(env)
-	cal_day:set({ label = os.date("%d") })
+	update_calendar()
 end)
 
 -- add width

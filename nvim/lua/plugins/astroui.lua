@@ -19,8 +19,7 @@ return {
         },
         lineNrBelow = {
           fg = "#969696"
-        }
-        -- Normal = { bg = "#000000" },
+        },
       },
       astrodark = { -- a table of overrides/changes when applying the astrotheme theme
         -- Normal = { bg = "#000000" },

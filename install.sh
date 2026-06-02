@@ -191,6 +191,54 @@ if [ "$(uname -s)" = "Linux" ]; then
   else
     echo "  WARNING: tailscaled not found in nix profile; skipping" >&2
   fi
+
+  echo ""
+  echo "[docker]"
+  # nix profile 内の dockerd を /usr/local/bin にリンクして systemd から参照する
+  NIX_DOCKERD=""
+  for _candidate in \
+    "$HOME/.nix-profile/bin/dockerd" \
+    "$HOME/.local/state/nix/profile/bin/dockerd" \
+    "/nix/var/nix/profiles/per-user/$(whoami)/profile/bin/dockerd"; do
+    if [ -x "$_candidate" ]; then
+      NIX_DOCKERD="$_candidate"
+      break
+    fi
+  done
+  unset _candidate
+
+  if [ -x "$NIX_DOCKERD" ]; then
+    echo "  found: $NIX_DOCKERD"
+    # dockerd / docker を /usr/local/bin にリンク
+    NIX_BIN_DIR="$(dirname "$NIX_DOCKERD")"
+    for _bin in dockerd docker docker-proxy docker-compose; do
+      if [ -x "$NIX_BIN_DIR/$_bin" ]; then
+        sudo ln -sf "$NIX_BIN_DIR/$_bin" "/usr/local/bin/$_bin"
+        echo "  linked: /usr/local/bin/$_bin -> $NIX_BIN_DIR/$_bin"
+      fi
+    done
+    unset _bin NIX_BIN_DIR
+
+    # docker グループを作成し、現在のユーザーを追加する
+    # (sudo 無しで docker を使えるようにする)
+    if ! getent group docker >/dev/null 2>&1; then
+      echo "  creating 'docker' group..."
+      sudo groupadd docker
+    fi
+    if ! id -nG "$(whoami)" | tr ' ' '\n' | grep -qx docker; then
+      echo "  adding $(whoami) to 'docker' group (re-login required)..."
+      sudo usermod -aG docker "$(whoami)"
+    fi
+
+    # systemd service をインストール
+    sudo cp "$DOTFILES_DIR/systemd/docker.service" /etc/systemd/system/docker.service
+    sudo systemctl daemon-reload
+    sudo systemctl enable --now docker
+    echo "  systemd: docker enabled and started"
+    echo "  NOTE: 'docker' グループ追加後は再ログインが必要 (newgrp docker でも可)"
+  else
+    echo "  WARNING: dockerd not found in nix profile; skipping" >&2
+  fi
 fi
 
 # --- macOS only: aerospace / sketchybar / borders ---

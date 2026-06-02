@@ -83,6 +83,16 @@
 
                 # VPN
                 tailscale
+
+                # gh
+                gh
+              ]
+              ++ lib.optionals stdenv.isLinux [
+                # コンテナ: docker エンジン (dockerd) は Linux のみ。
+                # systemd サービスは install.sh で設定する。
+                docker
+                # docker compose (standalone `docker-compose` コマンド)
+                docker-compose
               ]
               ++ lib.optionals stdenv.isDarwin [
                 # macOS ウィンドウマネージャ / ステータスバー

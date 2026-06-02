@@ -1,0 +1,27 @@
+[Unit]
+Description=Docker Application Container Engine (nix)
+Documentation=https://docs.docker.com
+After=network-online.target firewalld.service
+Wants=network-online.target
+
+[Service]
+Type=notify
+# nix profile の dockerd を /usr/local/bin にリンクして参照する。
+# dockerd のラッパーが containerd/runc/iptables 等を PATH に含むため、
+# 追加の依存サービスは不要。--group docker でソケットを docker グループに開放する。
+ExecStart=/usr/local/bin/dockerd --group docker
+ExecReload=/bin/kill -s HUP $MAINPID
+TimeoutStartSec=0
+RestartSec=2
+Restart=always
+# 公式 docker.service に合わせたリソース上限
+LimitNOFILE=1048576
+LimitNPROC=infinity
+LimitCORE=infinity
+TasksMax=infinity
+Delegate=yes
+KillMode=process
+OOMScoreAdjust=-500
+
+[Install]
+WantedBy=multi-user.target

@@ -21,6 +21,20 @@
           pkgs = nixpkgs.legacyPackages.${system};
         in
         {
+          croque = pkgs.rustPlatform.buildRustPackage {
+            pname = "croque";
+            version = "0.10.0";
+            src = pkgs.fetchFromGitHub {
+              owner = "Ryooooooga";
+              repo = "croque";
+              rev = "v0.10.0";
+              hash = "sha256-/5jykjYIF89qvmibTZPhOhNcOk+Azyo8uBxFWMlm6A0=";
+              fetchSubmodules = true;
+            };
+            cargoHash = "sha256-Z2yE3E1OWuema1aIWb2FRns3rROctsgEbmfMA+nviME=";
+            doCheck = false;
+          };
+
           default = pkgs.buildEnv {
             name = "dotfiles-deps";
             # buildEnv 内のパス衝突 (gcc/binutils 等) でブートストラップが
@@ -63,6 +77,9 @@
 
                 # terminal multiplexer
                 tmux
+
+                # shell prompt
+                self.packages.${system}.croque
               ]
               ++ lib.optionals stdenv.isDarwin [
                 # macOS ウィンドウマネージャ / ステータスバー

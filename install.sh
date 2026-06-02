@@ -70,7 +70,20 @@ fi
 # nix deps インストール後に実行する（zsh が nix profile に入った後でないと見つからない）
 echo ""
 echo "[zsh default shell]"
-NIX_ZSH="$(command -v zsh 2>/dev/null || true)"
+# nix profile のパスは環境によって異なるため、既知の候補を順に探す
+NIX_ZSH=""
+for _candidate in \
+  "$HOME/.nix-profile/bin/zsh" \
+  "$HOME/.local/state/nix/profile/bin/zsh" \
+  "/nix/var/nix/profiles/per-user/$(whoami)/profile/bin/zsh"; do
+  if [ -x "$_candidate" ]; then
+    NIX_ZSH="$_candidate"
+    break
+  fi
+done
+unset _candidate
+# フォールバック: PATH 上の zsh
+[ -z "$NIX_ZSH" ] && NIX_ZSH="$(command -v zsh 2>/dev/null || true)"
 if [ -x "$NIX_ZSH" ]; then
   echo "  found: $NIX_ZSH"
   if [ "$SHELL" != "$NIX_ZSH" ]; then

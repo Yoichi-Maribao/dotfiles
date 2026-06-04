@@ -86,6 +86,9 @@
 
                 # gh
                 gh
+
+                # ni: パッケージマネージャ自動判別 (ni/nr/nlx/nun)
+                ni
               ]
               ++ lib.optionals stdenv.isLinux [
                 # コンテナ: docker エンジン (dockerd) は Linux のみ。

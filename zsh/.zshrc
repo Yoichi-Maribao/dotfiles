@@ -8,6 +8,7 @@ esac
 if $IS_MAC; then
   export PATH=/opt/homebrew/bin:$PATH
 fi
+
 export PATH=$HOME/.local/bin:$PATH
 export PATH=$HOME/.cargo/bin:$PATH
 
@@ -32,8 +33,10 @@ for _ysu in \
 done
 unset _ysu
 
-# --- npm/n ---
-export PATH=$HOME/.npm-global/lib/node_modules/n/bin:$PATH
+# --- mise (managed by nix / flake.nix) ---
+# .mise.toml / .tool-versions があるディレクトリで node/go/python 等を
+# 自動切替する。設定が無ければ nix 固定のグローバル版にフォールバック。
+command -v mise &>/dev/null && eval "$(mise activate zsh)"
 
 # --- prompt (croque) ---
 command -v croque &>/dev/null && eval "$(croque init zsh)"

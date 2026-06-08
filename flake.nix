@@ -62,8 +62,6 @@
                 imagemagick
 
                 # 各言語 LSP / ツールのランタイム
-                # typescript pack / copilot
-                nodejs
                 # go pack
                 go
                 # python デバッガ等

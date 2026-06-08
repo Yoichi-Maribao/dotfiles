@@ -1,4 +1,5 @@
 -- Customize None-ls sources
+-- ESLint is handled by astrocommunity.pack.eslint (LSP-based)
 
 ---@type LazySpec
 return {
@@ -22,20 +23,7 @@ return {
       "prettier.config.cjs",
     }
 
-    local eslint_files = {
-      "eslint.config.js",
-      "eslint.config.mjs",
-      "eslint.config.cjs",
-      ".eslintrc",
-      ".eslintrc.json",
-      ".eslintrc.js",
-      ".eslintrc.cjs",
-      ".eslintrc.yaml",
-      ".eslintrc.yml",
-    }
-
     local has_biome = function(utils) return utils.root_has_file(biome_files) end
-    local has_eslint = function(utils) return utils.root_has_file(eslint_files) end
     local has_prettier = function(utils)
       if has_biome(utils) then return false end
       return utils.root_has_file(prettier_files)
@@ -49,9 +37,6 @@ return {
       },
       -- Prettier: prettier設定がある場合に有効、biome.json がある場合は無効
       null_ls.builtins.formatting.prettier.with { condition = has_prettier },
-      -- ESLint: eslint設定がある場合のみ有効
-      null_ls.builtins.diagnostics.eslint_d.with { condition = has_eslint },
-      null_ls.builtins.formatting.eslint_d.with { condition = has_eslint },
     })
   end,
 }

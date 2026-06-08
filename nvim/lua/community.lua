@@ -9,5 +9,6 @@ return {
   { import = "astrocommunity.pack.typescript" },
   { import = "astrocommunity.pack.go" },
   { import = "astrocommunity.pack.eslint" },
+  { import = "astrocommunity.pack.tailwindcss" },
   -- import/override with your plugins folder
 }

@@ -87,6 +87,9 @@
 
                 # lazygit: git TUI (nvim から <Leader>gg / <Leader>tl で起動)
                 lazygit
+                
+                # fzf
+                fzf
 
                 # ni: パッケージマネージャ自動判別 (ni/nr/nlx/nun)
                 ni

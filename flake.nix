@@ -85,6 +85,9 @@
                 # gh
                 gh
 
+                # codex: OpenAI Codex CLI (コーディングエージェント)
+                codex
+
                 # lazygit: git TUI (nvim から <Leader>gg / <Leader>tl で起動)
                 lazygit
                 

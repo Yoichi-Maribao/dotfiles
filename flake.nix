@@ -100,6 +100,9 @@
                 # mise: ポリグロット版マネージャ (node/go/python 等を
                 # プロジェクト単位で切替)。activate は zsh/.zshrc で設定。
                 mise
+
+                # herdr: AIエージェントターミナルマルチプレクサ
+                herdr
               ]
               ++ lib.optionals stdenv.isLinux [
                 # コンテナ: docker エンジン (dockerd) は Linux のみ。

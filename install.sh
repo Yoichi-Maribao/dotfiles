@@ -131,6 +131,14 @@ fi
 ln -s "$DOTFILES_DIR/nvim" "$HOME/.config/nvim"
 echo "  linked: ~/.config/nvim -> $DOTFILES_DIR/nvim"
 
+# --- herdr ---
+# ~/.config/herdr にはログ・ソケット等の実行時ファイルも置かれるため、
+# ディレクトリごとではなく config.toml のみをリンクする。
+echo ""
+echo "[herdr]"
+mkdir -p "$HOME/.config/herdr"
+link_file "$DOTFILES_DIR/herdr/config.toml" "$HOME/.config/herdr/config.toml"
+
 # --- oh-my-zsh ---
 echo ""
 if [ ! -d "$HOME/.oh-my-zsh" ]; then

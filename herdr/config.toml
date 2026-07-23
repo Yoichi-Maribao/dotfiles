@@ -1,0 +1,11 @@
+[ui]
+agent_panel_sort = "spaces"
+
+[keys]
+prefix = "ctrl+j"
+
+[ui.toast]
+delivery = "herdr"
+
+[experimental]
+pane_history = false

@@ -117,6 +117,22 @@ function peco-src () {
 zle -N peco-src
 bindkey '^]' peco-src
 
+# --- herdr ---
+# herdr worktree へ cd。引数あり: ブランチ名の部分一致 / 引数なし: peco で選択
+function hcd () {
+  local dir
+  if [ -n "$1" ]; then
+    dir=$(herdr worktree list --cwd . --json \
+      | jq -r --arg q "$1" '.result.worktrees[] | select(.branch | contains($q)).path' \
+      | head -1)
+  else
+    dir=$(herdr worktree list --cwd . --json \
+      | jq -r '.result.worktrees[] | "\(.branch)\t\(.path)"' \
+      | peco | cut -f2)
+  fi
+  [ -n "$dir" ] && cd "$dir"
+}
+
 # --- vite (dev server) ---
 export __VITE_ADDITIONAL_SERVER_ALLOWED_HOSTS=baowin
 

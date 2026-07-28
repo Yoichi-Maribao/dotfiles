@@ -3,8 +3,14 @@
 
   inputs.nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
 
+  # hunk: AIエージェント向け diff ビューア (nixpkgs 未収録のため flake から取得)
+  # nixpkgs.follows を付けると hunk 側の flake-parts が
+  # x86_64-darwin サポートを落とした nixpkgs 26.11 で評価に失敗するため、
+  # hunk がピン止めした nixpkgs をそのまま使う。
+  inputs.hunk.url = "github:modem-dev/hunk";
+
   outputs =
-    { self, nixpkgs }:
+    { self, nixpkgs, hunk }:
     let
       systems = [
         "x86_64-linux"
@@ -103,6 +109,9 @@
 
                 # herdr: AIエージェントターミナルマルチプレクサ
                 herdr
+
+                # hunk: AIエージェント向け diff ビューア
+                hunk.packages.${system}.hunk
               ]
               ++ lib.optionals stdenv.isLinux [
                 # コンテナ: docker エンジン (dockerd) は Linux のみ。

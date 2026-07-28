@@ -31,9 +31,11 @@ return {
 
     opts.sources = require("astrocore").list_insert_unique(opts.sources, {
       -- Biome: biome.json がある場合のみ有効
+      -- format ではなく check --write を使い、safe fix（import type 変換・import整列など）も保存時に適用する
       null_ls.builtins.formatting.biome.with {
         only_local = "node_modules/.bin",
         condition = has_biome,
+        args = { "check", "--write", "--stdin-file-path", "$FILENAME" },
       },
       -- Prettier: prettier設定がある場合に有効、biome.json がある場合は無効
       null_ls.builtins.formatting.prettier.with { condition = has_prettier },

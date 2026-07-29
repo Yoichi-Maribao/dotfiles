@@ -88,6 +88,9 @@
                 # VPN
                 tailscale
 
+                # mosh: 回線切断に強い SSH 代替 (ローミング/ローカルエコー)
+                mosh
+
                 # gh
                 gh
 

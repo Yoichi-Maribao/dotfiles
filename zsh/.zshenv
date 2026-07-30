@@ -5,3 +5,19 @@
 if [ -e '/nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh' ]; then
   . '/nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh'
 fi
+
+# nix の glibc はシステムの locale-archive を参照しないため、
+# nix profile (flake.nix の glibcLocalesUtf8) の locale-archive を指す。
+# これが無いと nix ビルドの mosh-server 等が UTF-8 ロケールを認識できない。
+# Linux のみ該当 (macOS にはこのファイルが存在しない)。
+if [ -z "${LOCALE_ARCHIVE-}" ]; then
+  for _archive in \
+    "$HOME/.nix-profile/lib/locale/locale-archive" \
+    "${XDG_STATE_HOME:-$HOME/.local/state}/nix/profile/lib/locale/locale-archive"; do
+    if [ -e "$_archive" ]; then
+      export LOCALE_ARCHIVE="$_archive"
+      break
+    fi
+  done
+  unset _archive
+fi

@@ -117,6 +117,11 @@
                 hunk.packages.${system}.hunk
               ]
               ++ lib.optionals stdenv.isLinux [
+                # nix の glibc はシステムの /usr/lib/locale を見ないため、
+                # UTF-8 ロケール一式を nix で提供する (mosh-server が
+                # en_US.UTF-8 を要求する)。LOCALE_ARCHIVE は zsh/.zshenv で指す。
+                glibcLocalesUtf8
+
                 # コンテナ: docker エンジン (dockerd) は Linux のみ。
                 # systemd サービスは install.sh で設定する。
                 docker

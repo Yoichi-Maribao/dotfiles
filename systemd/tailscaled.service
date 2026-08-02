@@ -5,9 +5,16 @@ Wants=network-pre.target
 After=network-pre.target NetworkManager.service systemd-resolved.service
 
 [Service]
+# Type=notify: tailscaled は sd_notify で起動完了を通知する。
+# 指定しないと systemd が即座に起動成功とみなし、依存 unit の順序が崩れる。
+Type=notify
 ExecStart=/usr/local/bin/tailscaled --state=/var/lib/tailscale/tailscaled.state --socket=/run/tailscale/tailscaled.sock --port=41641
+# 停止時に tailscale0 とルーティング設定を後始末する。
+ExecStopPost=/usr/local/bin/tailscaled --cleanup
 RuntimeDirectory=tailscale
 StateDirectory=tailscale
+# state には認証鍵が入るので root 以外から読めないようにする。
+StateDirectoryMode=0700
 Restart=on-failure
 
 [Install]

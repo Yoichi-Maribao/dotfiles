@@ -85,6 +85,9 @@ alias ta="tmux a"
 # --- aliases: yarn ---
 alias yw="yarn workspace"
 
+# --- aliases: mosh ---
+alias mo="mosh opt"
+
 # --- aliases: mac only ---
 if $IS_MAC; then
   alias noCors="open -n -a /Applications/Google\ Chrome.app/Contents/MacOS/Google\ Chrome --args --user-data-dir=\"$HOME/tmp/chrome_dev_test\" --disable-web-security"

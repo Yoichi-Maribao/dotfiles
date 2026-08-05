@@ -47,6 +47,8 @@ echo "[workspaces] super+1-9 で切替 / super+shift+1-9 で移動"
 # ワークスペースを 9 面固定にする (動的だと番号切替と相性が悪い)
 gsettings set org.gnome.mutter dynamic-workspaces false
 gsettings set org.gnome.desktop.wm.preferences num-workspaces 9
+# 1-4 に名前を付ける (Space Bar が上部バーに表示する。5 以降は番号のまま)
+gsettings set org.gnome.desktop.wm.preferences workspace-names "['web', 'term', 'slack', 'music']"
 for i in 1 2 3 4 5 6 7 8 9; do
   # Ubuntu 既定では super+N が Dock のお気に入り起動に取られているので外す
   gsettings set org.gnome.shell.keybindings "switch-to-application-$i" "[]"

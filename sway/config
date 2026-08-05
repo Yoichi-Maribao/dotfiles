@@ -28,6 +28,14 @@ mouse_warping output
 # 日本語配列 (無指定だと US 配列になり記号の位置がズレる)
 input type:keyboard xkb_layout jp
 
+# 日本語入力 (fcitx5 + mozc)。fcitx5 は sway の input-method プロトコルで動くため
+# wayland ネイティブアプリは環境変数なしで変換できる。
+# XWayland / dbus 経由起動のアプリ向けに IM の環境変数も配っておく
+# (GNOME セッションには影響しない。ターミナル起動アプリ向けは zsh/.zshenv 側で設定)。
+exec systemctl --user set-environment GTK_IM_MODULE=fcitx QT_IM_MODULE=fcitx XMODIFIERS=@im=fcitx SDL_IM_MODULE=fcitx
+exec dbus-update-activation-environment --systemd GTK_IM_MODULE=fcitx QT_IM_MODULE=fcitx XMODIFIERS=@im=fcitx SDL_IM_MODULE=fcitx
+exec fcitx5 -d
+
 # 背景 (未指定だと真っ黒でセッションが死んでいるように見える)
 output * bg #1a1b26 solid_color
 

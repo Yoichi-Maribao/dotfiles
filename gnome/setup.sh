@@ -28,6 +28,10 @@ gnome-extensions disable tiling-assistant@ubuntu.com 2>/dev/null || true
 echo "[forge] settings"
 # aerospace の gaps.inner = 3 に合わせる
 gsettings --schemadir "$FORGE_DIR/schemas" set org.gnome.shell.extensions.forge window-gap-size 3
+# アクティブウィンドウの枠線を mac の borders (bordersrc) と同じ見た目にする
+# (active_color=0xc0ff00f2, width=4.0 相当。super+x で表示切替)
+gsettings --schemadir "$FORGE_DIR/schemas" set org.gnome.shell.extensions.forge focus-border-size 4
+gsettings --schemadir "$FORGE_DIR/schemas" set org.gnome.shell.extensions.forge focus-border-color 'rgba(255, 0, 242, 0.75)'
 
 echo "[workspaces] super+1-9 で切替 / super+shift+1-9 で移動"
 # ワークスペースを 9 面固定にする (動的だと番号切替と相性が悪い)

@@ -164,6 +164,15 @@ fi
 # --- Linux only: tailscale systemd service ---
 if [ "$(uname -s)" = "Linux" ]; then
   echo ""
+  echo "[gnome]"
+  # GNOME を aerospace 風のタイル操作にする (Forge + キーバインド)
+  if command -v gnome-shell &>/dev/null; then
+    "$DOTFILES_DIR/gnome/setup.sh"
+  else
+    echo "  skipped (gnome-shell not found)"
+  fi
+
+  echo ""
   echo "[tailscale]"
   # nix profile 内の tailscaled を /usr/local/bin にリンクして systemd から参照する
   NIX_TAILSCALED=""

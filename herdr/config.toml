@@ -1,5 +1,6 @@
 [ui]
 agent_panel_sort = "spaces"
+notification_type = "terminal"
 
 [keys]
 prefix = "ctrl+j"
@@ -8,6 +9,9 @@ navigate_workspace_up = "k"
 
 [ui.toast]
 delivery = "herdr"
+
+[ui.sound]
+enabled = false
 
 [experimental]
 pane_history = false

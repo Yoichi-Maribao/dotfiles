@@ -185,10 +185,11 @@ mode "service" {
     # r = flatten-workspace-tree 相当 (sway に完全な等価は無いので分割をリセット)
     bindsym r layout default; mode "default"
     # backspace = close-all-windows-but-current は sway に等価が無いため未割り当て
-}
 
-# sway 終了 (aerospace には無いが Linux セッション管理用に必要)
-bindsym $mod+shift+e exec swaynag -t warning -m 'Sway を終了しますか?' -B 'Yes, exit sway' 'swaymsg exit'
+    # sway 終了 (aerospace には無いが Linux セッション管理用に必要。
+    # main モードに置くと alt+shift+e の workspace E 移動と衝突する)
+    bindsym q exec swaynag -t warning -m 'Sway を終了しますか?' -B 'Yes, exit sway' 'swaymsg exit'; mode "default"
+}
 
 ### ワークスペース自動割り当て ([[on-window-detected]] に対応) ###
 # Linux 版アプリの app_id / class に合わせている。

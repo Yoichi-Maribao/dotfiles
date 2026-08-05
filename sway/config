@@ -42,7 +42,7 @@ output * bg #1a1b26 solid_color
 # ワークスペース表示と時計 (これが無いと現在のワークスペースが分からない)
 bar {
     position top
-    status_command while true; do date '+%Y-%m-%d (%a) %H:%M'; sleep 10; done
+    status_command sh ~/.config/sway/status.sh
     colors {
         statusline #ffffff
         background #1a1b26

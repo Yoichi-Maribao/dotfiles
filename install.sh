@@ -167,6 +167,7 @@ if [ "$(uname -s)" = "Linux" ]; then
   echo "[sway]"
   mkdir -p "$HOME/.config/sway"
   link_file "$DOTFILES_DIR/sway/config" "$HOME/.config/sway/config"
+  link_file "$DOTFILES_DIR/sway/status.sh" "$HOME/.config/sway/status.sh"
   if ! command -v sway &>/dev/null; then
     echo "  NOTE: sway 本体は未インストール。'sudo apt install sway' で導入する"
   fi

@@ -25,6 +25,24 @@ workspace_layout default
 focus_follows_mouse no
 mouse_warping output
 
+# 日本語配列 (無指定だと US 配列になり記号の位置がズレる)
+input type:keyboard xkb_layout jp
+
+# 背景 (未指定だと真っ黒でセッションが死んでいるように見える)
+output * bg #1a1b26 solid_color
+
+# ワークスペース表示と時計 (これが無いと現在のワークスペースが分からない)
+bar {
+    position top
+    status_command while true; do date '+%Y-%m-%d (%a) %H:%M'; sleep 10; done
+    colors {
+        statusline #ffffff
+        background #1a1b26
+        focused_workspace #7aa2f7 #7aa2f7 #1a1b26
+        inactive_workspace #1a1b26 #1a1b26 #a9b1d6
+    }
+}
+
 # aerospace: [gaps] inner 3 / outer left,bottom,right 3 / top 0
 gaps inner 3
 gaps left 3

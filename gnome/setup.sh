@@ -3,35 +3,45 @@
 # 冪等なので何度実行してもよい。適用後は一度ログインし直す。
 set -euo pipefail
 
-FORGE_UUID="forge@jmmaranan.com"
-FORGE_DIR="$HOME/.local/share/gnome-shell/extensions/$FORGE_UUID"
+EXT_DIR="$HOME/.local/share/gnome-shell/extensions"
 
-echo "[forge] install"
-if [ ! -d "$FORGE_DIR" ]; then
-  tmp="$(mktemp -d)"
-  # extensions.gnome.org から現在の GNOME Shell 用の最新版を取得する
-  curl -sL "https://extensions.gnome.org/download-extension/${FORGE_UUID}.shell-extension.zip" \
-    -o "$tmp/forge.zip"
-  gnome-extensions install --force "$tmp/forge.zip"
-  rm -rf "$tmp"
-  echo "  installed: $FORGE_UUID"
-else
-  echo "  already installed"
-fi
-gnome-extensions enable "$FORGE_UUID" 2>/dev/null \
-  || gsettings set org.gnome.shell enabled-extensions \
-       "$(gsettings get org.gnome.shell enabled-extensions | python3 -c "import ast,sys; l=ast.literal_eval(sys.stdin.read()); l+=['$FORGE_UUID'] if '$FORGE_UUID' not in l else []; print(l)")"
+# extensions.gnome.org から現在の GNOME Shell 用の最新版を取得して有効化する
+install_extension() {
+  local uuid="$1"
+  echo "[$uuid] install"
+  if [ ! -d "$EXT_DIR/$uuid" ]; then
+    local tmp
+    tmp="$(mktemp -d)"
+    curl -sL "https://extensions.gnome.org/download-extension/${uuid}.shell-extension.zip" \
+      -o "$tmp/ext.zip"
+    gnome-extensions install --force "$tmp/ext.zip"
+    rm -rf "$tmp"
+    echo "  installed"
+  else
+    echo "  already installed"
+  fi
+  # シェルが未スキャンだと enable が失敗するので、その場合は直接リストへ追加する
+  gnome-extensions enable "$uuid" 2>/dev/null \
+    || gsettings set org.gnome.shell enabled-extensions \
+         "$(gsettings get org.gnome.shell enabled-extensions | python3 -c "import ast,sys; l=ast.literal_eval(sys.stdin.read()); l+=['$uuid'] if '$uuid' not in l else []; print(l)")"
+}
+
+# Forge: i3/sway 風の自動タイリング
+install_extension "forge@jmmaranan.com"
+# Space Bar: 上部バーのワークスペース表示を i3 風の番号ボタンにする
+install_extension "space-bar@luchrioh"
 
 # Ubuntu 標準の Tiling Assistant は Forge の自動タイリングと競合するので無効化
 gnome-extensions disable tiling-assistant@ubuntu.com 2>/dev/null || true
 
 echo "[forge] settings"
+FORGE_SCHEMAS="$EXT_DIR/forge@jmmaranan.com/schemas"
 # aerospace の gaps.inner = 3 に合わせる
-gsettings --schemadir "$FORGE_DIR/schemas" set org.gnome.shell.extensions.forge window-gap-size 3
+gsettings --schemadir "$FORGE_SCHEMAS" set org.gnome.shell.extensions.forge window-gap-size 3
 # アクティブウィンドウの枠線を mac の borders (bordersrc) と同じ見た目にする
 # (active_color=0xc0ff00f2, width=4.0 相当。super+x で表示切替)
-gsettings --schemadir "$FORGE_DIR/schemas" set org.gnome.shell.extensions.forge focus-border-size 4
-gsettings --schemadir "$FORGE_DIR/schemas" set org.gnome.shell.extensions.forge focus-border-color 'rgba(255, 0, 242, 0.75)'
+gsettings --schemadir "$FORGE_SCHEMAS" set org.gnome.shell.extensions.forge focus-border-size 4
+gsettings --schemadir "$FORGE_SCHEMAS" set org.gnome.shell.extensions.forge focus-border-color 'rgba(255, 0, 242, 0.75)'
 
 echo "[workspaces] super+1-9 で切替 / super+shift+1-9 で移動"
 # ワークスペースを 9 面固定にする (動的だと番号切替と相性が悪い)
@@ -59,4 +69,4 @@ gsettings set org.gnome.settings-daemon.plugins.media-keys screensaver "['<Super
 gsettings set org.gnome.shell.keybindings toggle-message-tray "['<Super>m']"
 
 echo ""
-echo "Done! ログインし直すと Forge が有効になる。"
+echo "Done! ログインし直すと拡張が有効になる。"

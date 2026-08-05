@@ -164,31 +164,6 @@ fi
 # --- Linux only: tailscale systemd service ---
 if [ "$(uname -s)" = "Linux" ]; then
   echo ""
-  echo "[sway]"
-  mkdir -p "$HOME/.config/sway"
-  link_file "$DOTFILES_DIR/sway/config" "$HOME/.config/sway/config"
-  link_file "$DOTFILES_DIR/sway/status.sh" "$HOME/.config/sway/status.sh"
-  if ! command -v sway &>/dev/null; then
-    echo "  NOTE: sway 本体は未インストール。'sudo apt install sway' で導入する"
-  fi
-
-  echo ""
-  echo "[fcitx5]"
-  # fcitx5 は profile を自前で書き換える (atomic rename) ため、
-  # symlink だと壊れる。初回のみコピーする。
-  mkdir -p "$HOME/.config/fcitx5"
-  if [ ! -e "$HOME/.config/fcitx5/profile" ]; then
-    cp "$DOTFILES_DIR/fcitx5/profile" "$HOME/.config/fcitx5/profile"
-    echo "  copied: ~/.config/fcitx5/profile (mozc を既定に設定)"
-  else
-    echo "  profile: OK (既存のものを維持)"
-  fi
-  if ! command -v fcitx5 &>/dev/null; then
-    echo "  NOTE: fcitx5 本体は未インストール。以下で導入する:"
-    echo "    sudo apt install fcitx5 fcitx5-mozc fcitx5-frontend-gtk3 fcitx5-frontend-gtk4 fcitx5-frontend-qt5"
-  fi
-
-  echo ""
   echo "[tailscale]"
   # nix profile 内の tailscaled を /usr/local/bin にリンクして systemd から参照する
   NIX_TAILSCALED=""

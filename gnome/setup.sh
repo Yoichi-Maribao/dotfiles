@@ -49,6 +49,9 @@ gsettings set org.gnome.mutter dynamic-workspaces false
 gsettings set org.gnome.desktop.wm.preferences num-workspaces 9
 # 1-4 に名前を付ける (Space Bar が上部バーに表示する。5 以降は番号のまま)
 gsettings set org.gnome.desktop.wm.preferences workspace-names "['web', 'term', 'slack', 'music']"
+# Ubuntu Dock は switch-to-application とは別に独自の super+N ホットキー
+# (お気に入りアプリ起動) を持っているので、こちらも無効化する
+gsettings set org.gnome.shell.extensions.dash-to-dock hot-keys false
 for i in 1 2 3 4 5 6 7 8 9; do
   # Ubuntu 既定では super+N が Dock のお気に入り起動に取られているので外す
   gsettings set org.gnome.shell.keybindings "switch-to-application-$i" "[]"

@@ -47,6 +47,8 @@ done
 # アプリ切替は alt+tab に残す。
 gsettings set org.gnome.desktop.wm.keybindings switch-applications "['<Alt>Tab']"
 gsettings set org.gnome.desktop.wm.keybindings switch-to-workspace-last "['<Super>Tab']"
+# aerospace の alt-shift-enter (フルスクリーン切替) を super+shift+enter に
+gsettings set org.gnome.desktop.wm.keybindings toggle-fullscreen "['<Shift><Super>Return']"
 
 echo "[conflicts] Forge の super+hjkl 等と衝突する GNOME 既定キーを整理"
 # super+h = 最小化 → 解除 (Forge のフォーカス移動に譲る)

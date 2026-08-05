@@ -164,6 +164,14 @@ fi
 # --- Linux only: tailscale systemd service ---
 if [ "$(uname -s)" = "Linux" ]; then
   echo ""
+  echo "[sway]"
+  mkdir -p "$HOME/.config/sway"
+  link_file "$DOTFILES_DIR/sway/config" "$HOME/.config/sway/config"
+  if ! command -v sway &>/dev/null; then
+    echo "  NOTE: sway 本体は未インストール。'sudo apt install sway' で導入する"
+  fi
+
+  echo ""
   echo "[tailscale]"
   # nix profile 内の tailscaled を /usr/local/bin にリンクして systemd から参照する
   NIX_TAILSCALED=""

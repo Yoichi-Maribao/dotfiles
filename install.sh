@@ -139,6 +139,18 @@ echo "[herdr]"
 mkdir -p "$HOME/.config/herdr"
 link_file "$DOTFILES_DIR/herdr/config.toml" "$HOME/.config/herdr/config.toml"
 
+# --- Claude Code (user-scope skills) ---
+# ~/.claude/skills にはプラグイン等が入れた他のスキルもあるため、
+# ディレクトリごとではなく自作スキルを 1 つずつリンクする。
+echo ""
+echo "[claude skills]"
+mkdir -p "$HOME/.claude/skills"
+for _skill in "$DOTFILES_DIR"/claude/skills/*/; do
+  _name="$(basename "$_skill")"
+  link_file "$DOTFILES_DIR/claude/skills/$_name" "$HOME/.claude/skills/$_name"
+done
+unset _skill _name
+
 # --- oh-my-zsh ---
 echo ""
 if [ ! -d "$HOME/.oh-my-zsh" ]; then
